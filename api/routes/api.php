@@ -11,6 +11,7 @@ use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PedidoProductoController;
 use App\Http\Controllers\ReservaController;
+use App\Http\Controllers\CategoryController;
 
 
 use App\Http\Middleware\ApiAuthMiddleware;
@@ -28,12 +29,13 @@ Route::prefix('barv1')->group(
         Route::post('/user/upload',[UserController::class,'uploadImage'])->middleware(ApiAuthMiddleware::class);//ruta para el metodo upload del controlador vehiculo
         Route::get('/user/getimage/{filename}',[UserController::class,'getImage']);
 
+        Route::get('/categoria/index',[CategoryController::class,'index']);
+        Route::post('/categoria/store',[CategoryController::class,'store']);
+
         Route::post('/producto/store',[ProductoController::class,'store']);
         Route::post('/producto/upload',[ProductoController::class,'uploadImage'])->middleware(ApiAuthMiddleware::class);//ruta para el metodo upload del controlador vehiculo
         Route::get('/producto/getimage/{filename}',[ProductoController::class,'getImage']);
         Route::post('/producto/update/{id}',[ProductoController::class,'update']);
-
-
 
         Route::resource('/user',UserController::class,['except'=>['create','edit','store']])->middleware(ApiAuthMiddleware::class);
         Route::resource('/producto',ProductoController::class,['except'=>['create','edit','store','update']])->middleware(ApiAuthMiddleware::class);
