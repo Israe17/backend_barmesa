@@ -161,7 +161,7 @@ class ProductoController extends Controller
                 // Retorna una respuesta exitosa
                 $response = [
                     "status" => 200,
-                    "message" => "Compra actualizada correctamente",
+                    "message" => "producto actualizado correctamente",
                     "producto" => $product
                 ];
                 return response()->json($response, 200);
