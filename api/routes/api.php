@@ -28,10 +28,14 @@ Route::prefix('barv1')->group(
         Route::post('/user/upload',[UserController::class,'uploadImage'])->middleware(ApiAuthMiddleware::class);//ruta para el metodo upload del controlador vehiculo
         Route::get('/user/getimage/{filename}',[UserController::class,'getImage'])->middleware(ApiAuthMiddleware::class);
 
+        Route::post('/producto/store',[ProductoController::class,'store']);
+        Route::post('/producto/upload',[ProductoController::class,'uploadImage'])->middleware(ApiAuthMiddleware::class);//ruta para el metodo upload del controlador vehiculo
+        Route::get('/producto/getimage/{filename}',[ProductoController::class,'getImage'])->middleware(ApiAuthMiddleware::class);
+
 
 
         Route::resource('/user',UserController::class,['except'=>['create','edit','store']])->middleware(ApiAuthMiddleware::class);
-        Route::resource('/produto',ProductoController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
+        Route::resource('/producto',ProductoController::class,['except'=>['create','edit','store']])->middleware(ApiAuthMiddleware::class);
         Route::resource('/factura',FacturaController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
         Route::resource('/detallefactura',DetalleFacturaController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
         Route::resource('/mesa',MesaController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
@@ -41,8 +45,7 @@ Route::prefix('barv1')->group(
         Route::resource('/reserva',ReservaController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
 
 
-        Route::post('/produto/upload',[ProductoController::class,'uploadImage'])->middleware(ApiAuthMiddleware::class);//ruta para el metodo upload del controlador vehiculo
-        Route::get('/produto/getimage/{filename}',[ProductoController::class,'getImage'])->middleware(ApiAuthMiddleware::class);
+
 
 
     }

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Firebase\JWT\JWT;
 use App\Models\Producto;
+use App\Helpers\JwtAuth;
 
 class ProductoController extends Controller
 {
@@ -32,19 +35,21 @@ class ProductoController extends Controller
             $rules = [
                 'nombre' => 'required',
                 'descripcion' => 'required',
-                'precio' => 'required'
+                'precio' => 'required',
+                'image' => 'required'
             ];
-            $isValid = \validator($data, $rules); //validamos los datos con las reglas definidas en la variable rules
+            $isValid = \Validator::make($data, $rules); //validamos los datos con las reglas definidas en la variable rules
             if (!$isValid->fails()) {
                 $product = new Producto(); //creamos un objeto de la clase Vehiculo
                 $product->nombre = $data['nombre']; //asignamos el valor del campo placa del objeto vehiculo con el valor del campo marca del array data
                 $product->descripcion = $data['descripcion']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
                 $product->precio = $precio; //asignamos el valor del campo modelo del objeto vehiculo con el valor del campo modelo del array data
+                $product->image = $data['image'];
                 $product->save(); //guardamos el objeto reserva en la base de datos
                 $response = array(
                     "status" => 201, //estado de la respuesta
                     "message" => "Producto creada", //mensaje de la respuesta
-                    "producto" => $product //datos de la respuesta que en este caso es el objeto cliente
+                    "data" => $product //datos de la respuesta que en este caso es el objeto cliente
                 );
             } else {
                 $response = array(
@@ -76,7 +81,7 @@ class ProductoController extends Controller
             $response = array(
                 "status" => 200, //estado de la respuesta
                 "message" => "Datos del Producto", //mensaje de la respuesta
-                "category" => $data //datos de la respuesta que en este caso es el objeto data
+                "data" => $data //datos de la respuesta que en este caso es el objeto data
             );
         } else {
             $response = array(
@@ -126,11 +131,11 @@ class ProductoController extends Controller
         if ($data_imput) {
             $data = json_decode($data_imput, true); //decodificamos los datos en formato json y los guardamos en la variable data
             $data = array_map('trim', $data); //eliminamos los espacios en blanco de los datos
-            $precio = floatval($data['precio']);
             $rules = [
                 'nombre' => 'required',
                 'descripcion' => 'required',
-                'precio' => 'required'
+                'precio' => 'required',
+                'image' => 'required'
             ];
             $isValid = \validator($data, $rules); //validamos los datos con las reglas definidas en la variable rules
             if (!$isValid->fails()) {
@@ -148,7 +153,8 @@ class ProductoController extends Controller
                 // Actualiza los campos del servicio con los nuevos datos
                 $product->nombre = $data['nombre']; //asignamos el valor del campo placa del objeto vehiculo con el valor del campo marca del array data
                 $product->descripcion = $data['descripcion']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
-                $product->precio = $precio;
+                $product->precio = $data['precio'];
+                $product->image = $data['image'];
                 // Guarda los cambios en la base de datos
                 $product->save();
 
