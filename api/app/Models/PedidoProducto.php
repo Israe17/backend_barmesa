@@ -9,7 +9,7 @@ class PedidoProducto extends Model
 {
     use HasFactory;
     protected $table = 'pedidoproducto';//definimos el nombre de la tabla
-    protected $fillable = ['idPedido','idProducto'];//definimos los campos que se pueden llenar
+    protected $fillable = ['idPedido','idProducto','descripcion'];//definimos los campos que se pueden llenar
 
     public function pedido(){
         return $this->belongsTo('App\Models\Pedido','idPedido');//relacion de muchos a uno con la tabla pedido

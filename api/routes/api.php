@@ -12,6 +12,7 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PedidoProductoController;
 use App\Http\Controllers\ReservaController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ClienteController;
 
 
 use App\Http\Middleware\ApiAuthMiddleware;
@@ -31,21 +32,27 @@ Route::prefix('barv1')->group(
 
         Route::get('/categoria/index',[CategoryController::class,'index']);
         Route::post('/categoria/store',[CategoryController::class,'store']);
+        Route::delete('/categoria/delete/{id}',[CategoryController::class,'destroy']);
 
         Route::post('/producto/store',[ProductoController::class,'store']);
         Route::post('/producto/upload',[ProductoController::class,'uploadImage'])->middleware(ApiAuthMiddleware::class);//ruta para el metodo upload del controlador vehiculo
         Route::get('/producto/getimage/{filename}',[ProductoController::class,'getImage']);
         Route::post('/producto/update/{id}',[ProductoController::class,'update']);
 
+        Route::post('/mesa/store',[MesaController::class,'store'])->middleware(ApiAuthMiddleware::class);
+
+        Route::post('/pedidoproducto/store',[PedidoProductoController::class,'store'])->middleware(ApiAuthMiddleware::class);
+
         Route::resource('/user',UserController::class,['except'=>['create','edit','store']])->middleware(ApiAuthMiddleware::class);
         Route::resource('/producto',ProductoController::class,['except'=>['create','edit','store','update']])->middleware(ApiAuthMiddleware::class);
         Route::resource('/factura',FacturaController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
         Route::resource('/detallefactura',DetalleFacturaController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
-        Route::resource('/mesa',MesaController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
+        Route::resource('/mesa',MesaController::class,['except'=>['create','edit','store']])->middleware(ApiAuthMiddleware::class);
         Route::resource('/inventario',InventarioController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
         Route::resource('/pedido',PedidoController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
-        Route::resource('/pedidoproducto',PedidoProductoController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
+        Route::resource('/pedidoproducto',PedidoProductoController::class,['except'=>['create','edit','store']])->middleware(ApiAuthMiddleware::class);
         Route::resource('/reserva',ReservaController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
+        Route::resource('/cliente',ClienteController::class,['except'=>['create','edit',]])->middleware(ApiAuthMiddleware::class);
 
 
 

@@ -32,11 +32,13 @@ class ProductoController extends Controller
             if(is_array($data)){
             $data = array_map('trim', $data); //eliminamos los espacios en blanco de los datos
             $precio = floatval($data['precio']);
+            $idCategoria = intval($data['idCategoria']);
             $rules = [
                 'nombre' => 'required',
                 'descripcion' => 'required',
                 'precio' => 'required',
-                'image' => 'required'
+                'image' => 'required',
+                'idCategoria' => 'required'
             ];
             $isValid = \Validator::make($data, $rules); //validamos los datos con las reglas definidas en la variable rules
             if (!$isValid->fails()) {
@@ -45,6 +47,7 @@ class ProductoController extends Controller
                 $product->descripcion = $data['descripcion']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
                 $product->precio = $precio; //asignamos el valor del campo modelo del objeto vehiculo con el valor del campo modelo del array data
                 $product->image = $data['image'];
+                $product->idCategoria = $idCategoria;
                 $product->save(); //guardamos el objeto reserva en la base de datos
                 $response = array(
                     "status" => 201, //estado de la respuesta
@@ -131,11 +134,13 @@ class ProductoController extends Controller
         if ($data_imput) {
             $data = json_decode($data_imput, true); //decodificamos los datos en formato json y los guardamos en la variable data
             $data = array_map('trim', $data); //eliminamos los espacios en blanco de los datos
+            $idCategoria = intval($data['idCategoria']);
             $rules = [
                 'nombre' => 'required',
                 'descripcion' => 'required',
                 'precio' => 'required',
-                'image' => 'required'
+                'image' => 'required',
+                'idCategoria' => 'required'
             ];
             $isValid = \validator($data, $rules); //validamos los datos con las reglas definidas en la variable rules
             if (!$isValid->fails()) {
@@ -155,6 +160,7 @@ class ProductoController extends Controller
                 $product->descripcion = $data['descripcion']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
                 $product->precio = $data['precio'];
                 $product->image = $data['image'];
+                $product->idCategoria = $idCategoria;
                 // Guarda los cambios en la base de datos
                 $product->save();
 

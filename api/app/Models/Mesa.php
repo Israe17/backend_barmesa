@@ -9,7 +9,7 @@ class Mesa extends Model
 {
     use HasFactory;
     protected $table = 'mesa';//definimos el nombre de la tabla
-    protected $fillable = ['estado','caducidad',];//definimos los campos que se pueden llenar
+    protected $fillable = ['estado','capacidad',];//definimos los campos que se pueden llenar
 
     public function factura(){
         return $this->belongsTo('App\Models\Factura','idFactura');//relacion de muchos a uno con la tabla factura

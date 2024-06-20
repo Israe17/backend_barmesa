@@ -23,20 +23,22 @@ class MesaController extends Controller
 
     public function store(Request $request)
     { //recibimos un request que contendra los datos a guardar
-        $data_imput = $request->input('data', null); //obtenemos los datos del request en formato json  y los guardamos en la variable data_input si no hay datos se guarda un null 
+        $data_imput = $request->input('data', null); //obtenemos los datos del request en formato json  y los guardamos en la variable data_input si no hay datos se guarda un null
         if ($data_imput) {
             $data = json_decode($data_imput, true); //decodificamos los datos en formato json y los guardamos en la variable data
             if (is_array($data)) {
                 $data = array_map('trim', $data); //eliminamos los espacios en blanco de los datos
                 $rules = [
                     'estado' => 'required',
-                    'caducidad' => 'required'
+                    'capacidad' => 'required',
+
+
                 ];
                 $isValid = \validator($data, $rules); //validamos los datos con las reglas definidas en la variable rules
                 if (!$isValid->fails()) {
                     $mesa = new Mesa(); //creamos un objeto de la clase Vehiculo
                     $mesa->estado = $data['estado']; //asignamos el valor del campo placa del objeto vehiculo con el valor del campo marca del array data
-                    $mesa->caducidad = $data['caducidad']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
+                    $mesa->capacidad = $data['capacidad']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
                     $mesa->save(); //guardamos el objeto reserva en la base de datos
                     $response = array(
                         "status" => 201, //estado de la respuesta
@@ -99,7 +101,7 @@ class MesaController extends Controller
             }
 
             // Verifica si hay posts relacionados
-            if ($mesa->factura()->count() > 0) { //verifica si la cantidad de clientes relacionados con la categoria es mayor a 0 
+            if ($mesa->factura()->count() > 0) { //verifica si la cantidad de clientes relacionados con la categoria es mayor a 0
                 $response = [
                     "status" => 400,
                     "message" => "No se puede eliminar la mesa, tiene facturas relacionadas"
@@ -107,7 +109,7 @@ class MesaController extends Controller
                 return response()->json($response, $response['status']);
             }
 
-        
+
 
             $delete = Mesa::where('id', $id)->delete(); //buscamos un registro de la tabla category con el id recibido y lo eliminamos y guardamos el resultado en la variable delete
             //$delete=Category::destroy($id); //otra forma de eliminar un registro
@@ -144,8 +146,9 @@ class MesaController extends Controller
                 $data = array_map('trim', $data); //eliminamos los espacios en blanco de los datos
                 $rules = [
                     'estado' => 'required',
-                    'caducidad' => 'required',
-                    
+                    'capacidad' => 'required',
+
+
                 ];
                 $isValid = \validator($data, $rules); //validamos los datos con las reglas definidas en la variable rules
                 if (!$isValid->fails()) {
@@ -163,8 +166,8 @@ class MesaController extends Controller
                     // Actualiza los campos del servicio con los nuevos datos
                     $mesa = new Mesa(); //creamos un objeto de la clase Vehiculo
                     $mesa->estado = $data['estado']; //asignamos el valor del campo placa del objeto vehiculo con el valor del campo marca del array data
-                    $mesa->caducidad = $data['caducidad']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
-                
+                    $mesa->caducidad = $data['capacidad']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
+
                     $mesa->save();
 
                     // Retorna una respuesta exitosa
@@ -195,4 +198,6 @@ class MesaController extends Controller
         }
         return response()->json($response, $response['status']); //retornamos la respuesta en formato json con el estado de la respuesta
     }
+
+
 }

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Factura;
+use App\Models\Cliente;
 
-class FacturaController extends Controller
+class ClienteController extends Controller
 {
     public function index()
     {
-        $data = Factura::all(); //obtenemos todos los registros de la tabla vehiculo y los guardamos en la variable data
+        $data = Cliente::all(); //obtenemos todos los registros de la tabla vehiculo y los guardamos en la variable data
         $response = array(
             "status" => 200, //estado de la respuesta
             "message" => "Todos los registros de los Pedidos", //mensaje de la respuesta
@@ -28,29 +28,28 @@ class FacturaController extends Controller
             $data = json_decode($data_imput, true); //decodificamos los datos en formato json y los guardamos en la variable data
             if (is_array($data)) {
                 $data = array_map('trim', $data); //eliminamos los espacios en blanco de los datos
-                $idReserva = $data['idReserva'];
-                $idCliente = $data['idCliente'];
-                $total = floatval($data['total']);
                 $rules = [
-                    'fecha' => 'required',
-                    'hora' => 'required',
-                    'total' => 'required',
-                    'idReserva' => 'required',
-                    'idCliente' => 'required'
+                    'cedula' => 'required',
+                    'nombre' => 'required',
+                    'apellido' => 'required',
+                    'correo' => 'required',
+                    'telefono' => 'required',
+                    'direccion' => 'required'
                 ];
                 $isValid = \validator($data, $rules); //validamos los datos con las reglas definidas en la variable rules
                 if (!$isValid->fails()) {
-                    $factura = new Factura(); //creamos un objeto de la clase Vehiculo
-                    $factura->fecha = $data['fecha']; //asignamos el valor del campo placa del objeto vehiculo con el valor del campo marca del array data
-                    $factura->hora = $data['hora']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
-                    $factura->total = $total;
-                    $factura->idReserva = $idReserva;
-                    $factura->idCliente = $idCliente;
-                    $factura->save(); //guardamos el objeto reserva en la base de datos
+                    $cliente = new Cliente(); //creamos un objeto de la clase Vehiculo
+                    $cliente->cedula = $data['cedula']; //asignamos el valor del campo placa del objeto vehiculo con el valor del campo marca del array data
+                    $cliente->nombre = $data['nombre']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
+                    $cliente->apellido = $data['apellido']; //asignamos el valor del campo modelo del objeto vehiculo con el valor del campo modelo del array data
+                    $cliente->correo = $data['correo']; //asignamos el valor del campo color del objeto vehiculo con el valor del campo color del array data
+                    $cliente->telefono = $data['telefono']; //asignamos el valor del campo color del objeto vehiculo con el valor del campo color del array data
+                    $cliente->direccion = $data['direccion']; //asignamos el valor del campo color del objeto vehiculo con el valor del campo color del array data
+                    $cliente->save(); //guardamos el objeto reserva en la base de datos
                     $response = array(
                         "status" => 201, //estado de la respuesta
-                        "message" => "Factura creada", //mensaje de la respuesta
-                        "factura" => $factura //datos de la respuesta que en este caso es el objeto cliente
+                        "message" => "Cliente creada", //mensaje de la respuesta
+                        "data" => $cliente //datos de la respuesta que en este caso es el objeto cliente
                     );
                 } else {
                     $response = array(
@@ -77,14 +76,12 @@ class FacturaController extends Controller
 
     public function show($id)
     {
-        $data = Factura::find($id); //buscamos un registro de la tabla cliente con el id recibido y lo guardamos en la variable data
+        $data = Cliente::find($id); //buscamos un registro de la tabla cliente con el id recibido y lo guardamos en la variable data
         if (is_object($data)) { //verificamos si la variable data es un objeto
-            $data = $data->load('reserva');
-            $data = $data->load('detalleFactura');
             $response = array(
                 "status" => 200, //estado de la respuesta
-                "message" => "Datos de factura", //mensaje de la respuesta
-                "category" => $data //datos de la respuesta que en este caso es el objeto data
+                "message" => "Datos de cliente", //mensaje de la respuesta
+                "data" => $data //datos de la respuesta que en este caso es el objeto data
             );
         } else {
             $response = array(
@@ -99,39 +96,24 @@ class FacturaController extends Controller
     {
         if (isset($id)) { //isset = verifica si una variable esta definida, en este caso si el id esta definido
 
-            $detalleFact = Factura::where('id', $id)->first(); // Busca la categoría por ID y la guarda en la variable category
-            if (!$detalleFact) { //verifica si la variable category es falsa
+            $cliente = Cliente::where('id', $id)->first(); // Busca la categoría por ID y la guarda en la variable category
+            if (!$cliente) { //verifica si la variable category es falsa
                 $response = [
                     "status" => 404,
-                    "message" => "factura no encontrada"
+                    "message" => "cliente no encontrado"
                 ];
                 return response()->json($response, $response['status']);
             }
 
             // Verifica si hay posts relacionados
-            if ($detalleFact->reserva()->count() > 0) { //verifica si la cantidad de clientes relacionados con la categoria es mayor a 0
-                $response = [
-                    "status" => 400,
-                    "message" => "No se puede eliminar el factura, tiene reservas relacionadas"
-                ];
-                return response()->json($response, $response['status']);
-            }
-
-            if ($detalleFact->detalleFactura()->count() > 0) { //verifica si la cantidad de clientes relacionados con la categoria es mayor a 0
-                $response = [
-                    "status" => 400,
-                    "message" => "No se puede eliminar el factura, tiene detalles de factura relacionadas"
-                ];
-                return response()->json($response, $response['status']);
-            }
 
 
-            $delete = Factura::where('id', $id)->delete(); //buscamos un registro de la tabla category con el id recibido y lo eliminamos y guardamos el resultado en la variable delete
+            $delete = Cliente::where('id', $id)->delete(); //buscamos un registro de la tabla category con el id recibido y lo eliminamos y guardamos el resultado en la variable delete
             //$delete=Category::destroy($id); //otra forma de eliminar un registro
             if ($delete) { //verificamos si la variable delete es verdadera
                 $response = array(
                     "status" => 200, //estado de la respuesta
-                    "message" => "factura eliminada" //mensaje de la respuesta
+                    "message" => "cliente eliminado" //mensaje de la respuesta
                 );
                 return response()->json($response, $response['status']); //retornamos la respuesta en formato json con el estado de la respuesta
 
@@ -160,20 +142,20 @@ class FacturaController extends Controller
             if (is_array($data)) {
                 $data = array_map('trim', $data); //eliminamos los espacios en blanco de los datos
                 $idReserva = $data['idReserva'];
-                $idCliente = $data['idCliente'];
                 $total = floatval($data['total']);
                 $rules = [
-                    'fecha' => 'required',
-                    'hora' => 'required',
-                    'total' => 'required',
-                    'idReserva' => 'required',
-                    'idCliente' => 'required'
+                    'cedula' => 'required',
+                    'nombre' => 'required',
+                    'apellido' => 'required',
+                    'correo' => 'required',
+                    'telefono' => 'required',
+                    'direccion' => 'required'
                 ];
                 $isValid = \validator($data, $rules); //validamos los datos con las reglas definidas en la variable rules
                 if (!$isValid->fails()) {
-                    $pedido = Factura::find($id); // Busca el servicio que deseas actualizar
+                    $cliente = Cliente::find($id); // Busca el servicio que deseas actualizar
 
-                    if (!$pedido) {
+                    if (!$cliente) {
                         // Si no se encuentra el servicio, retorna un mensaje de error
                         $response = [
                             "status" => 404,
@@ -183,19 +165,20 @@ class FacturaController extends Controller
                     }
 
                     // Actualiza los campos del servicio con los nuevos datos
-                    $factura = new Factura(); //creamos un objeto de la clase Vehiculo
-                    $factura->fecha = $data['fecha']; //asignamos el valor del campo placa del objeto vehiculo con el valor del campo marca del array data
-                    $factura->hora = $data['hora']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
-                    $factura->total = $total;
-                    $factura->idReserva = $idReserva;
-                    $factura->idCliente = $idCliente;
-                    $factura->save();
+
+                    $cliente->cedula = $data['cedula']; //asignamos el valor del campo placa del objeto vehiculo con el valor del campo marca del array data
+                    $cliente->nombre = $data['nombre']; //asignamos el valor del campo marca del objeto vehiculo con el valor del campo marca del array data
+                    $cliente->apellido = $data['apellido']; //asignamos el valor del campo modelo del objeto vehiculo con el valor del campo modelo del array data
+                    $cliente->correo = $data['correo']; //asignamos el valor del campo color del objeto vehiculo con el valor del campo color del array data
+                    $cliente->telefono = $data['telefono']; //asignamos el valor del campo color del objeto vehiculo con el valor del campo color del array data
+                    $cliente->direccion = $data['direccion'];
+                    $cliente->save();
 
                     // Retorna una respuesta exitosa
                     $response = [
                         "status" => 200,
-                        "message" => "factura actualizado correctamente",
-                        "factura" => $factura
+                        "message" => "cliente actualizado correctamente",
+                        "cliente" => $cliente
                     ];
                     return response()->json($response, 200);
                 } else {
